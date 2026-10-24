@@ -1,2 +1,2 @@
-# Ongles_de_sorci-re
+# Ongles_de_sorciere
 appli pour aider ma fille à ne plus se ronger les ongles
