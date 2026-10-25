@@ -1,0 +1,64 @@
+# Ongle de sorcière : ce dépôt est public, aucune donnée personnelle ne doit y entrer.
+# Les dessins de l'application sont en SVG (non bloqué). Si une image est un jour
+# nécessaire (par exemple les icônes PNG d'installation), elle est autorisée
+# explicitement plus bas par une ligne commençant par « ! », après validation.
+
+# Photos et images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+*.heic
+*.heif
+*.bmp
+*.tif
+*.tiff
+*.raw
+*.dng
+
+# Vidéos et enregistrements
+*.mp4
+*.mov
+*.3gp
+*.m4a
+*.wav
+*.mp3
+*.ogg
+
+# PDF et scans (les scans sont des images ou des PDF, déjà bloqués)
+*.pdf
+
+# E-mails
+*.eml
+*.msg
+*.mbox
+
+# Tableurs
+*.xls
+*.xlsx
+*.xlsm
+*.ods
+*.csv
+
+# Documents bureautiques
+*.doc
+*.docx
+*.odt
+*.ppt
+*.pptx
+
+# Fichiers de sauvegarde de l'application et exports
+sauvegarde*.json
+*-sauvegarde*.json
+backup*.json
+
+# Environnement de développement
+node_modules/
+.env
+.env.*
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Exceptions validées (aucune pour l'instant)
