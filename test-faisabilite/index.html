@@ -1,0 +1,76 @@
+<!doctype html>
+<!--
+  Ongle de sorcière - Page de test de faisabilité
+  Version 1.0 du 26/10/2026 : première version (six vérifications, QO-001, QO-002, QO-017, QO-018).
+  La page n'envoie rien : la politique de sécurité ci-dessous interdit tout appel hors de ce site.
+-->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#3b1f5c">
+  <title>Ongle de sorcière - Test</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icone.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Test de faisabilité</h1>
+    <p>Version 1.0. Cette page vérifie ce que le téléphone sait faire. Elle n'envoie rien et n'enregistre aucune photo.</p>
+  </header>
+
+  <section id="t1">
+    <h2>1. Le téléphone</h2>
+    <pre id="r1">Lecture en cours…</pre>
+  </section>
+
+  <section id="t2">
+    <h2>2. Installation et hors ligne</h2>
+    <pre id="r2">Lecture en cours…</pre>
+    <button id="b-installer" hidden>Installer l'application de test</button>
+    <label><input type="checkbox" id="c-hors-ligne"> J'ai rouvert l'application en mode avion et elle s'est affichée</label>
+  </section>
+
+  <section id="t3">
+    <h2>3. Stockage durable</h2>
+    <pre id="r3">Lecture en cours…</pre>
+    <button id="b-durable">Demander le stockage durable</button>
+  </section>
+
+  <section id="t4">
+    <h2>4. Données fictives</h2>
+    <pre id="r4">Lecture en cours…</pre>
+  </section>
+
+  <section id="t5">
+    <h2>5. Voix française</h2>
+    <pre id="r5">Lecture en cours…</pre>
+    <button id="b-voix">Écouter la sorcière</button>
+    <label><input type="checkbox" id="c-voix"> J'ai entendu la phrase en français</label>
+    <label><input type="checkbox" id="c-voix-avion"> Je l'ai aussi entendue en mode avion</label>
+  </section>
+
+  <section id="t6">
+    <h2>6. Caméra</h2>
+    <pre id="r6">Pas encore essayée.</pre>
+    <button id="b-camera-arriere">Essayer la caméra arrière</button>
+    <button id="b-camera-avant">Essayer la caméra avant</button>
+    <button id="b-camera-stop" hidden>Arrêter la caméra</button>
+    <video id="apercu" playsinline muted hidden></video>
+    <label><input type="checkbox" id="c-camera"> J'ai vu l'image de la caméra</label>
+  </section>
+
+  <section id="compte-rendu">
+    <h2>Compte rendu à copier</h2>
+    <p>Appuie sur « Copier », puis colle le texte dans le fil du projet.</p>
+    <button id="b-copier">Copier le compte rendu</button>
+    <span id="copie-ok" hidden>Copié.</span>
+    <textarea id="texte" readonly rows="14"></textarea>
+  </section>
+
+  <script src="test.js"></script>
+</body>
+</html>

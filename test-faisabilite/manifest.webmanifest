@@ -1,0 +1,14 @@
+{
+  "name": "Ongle de sorcière - Test",
+  "short_name": "Test sorcière",
+  "description": "Page de test de faisabilité de l'application Ongle de sorcière.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f1fa",
+  "theme_color": "#3b1f5c",
+  "icons": [
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
