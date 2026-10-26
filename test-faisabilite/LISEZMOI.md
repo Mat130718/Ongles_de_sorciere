@@ -1,6 +1,6 @@
 # Page de test de faisabilité
 
-Version 1.1 du 26/10/2026 : la voix de France passe avant les autres voix françaises (1.0 : première version).
+Version 1.2 du 26/10/2026 : trois essais de plus, prévus au plan de test (1.1 : la voix de France passe avant les autres voix françaises ; 1.0 : première version).
 
 Cette page vérifie, sur un vrai téléphone Android, ce dont l'application Ongle de sorcière aura besoin. Elle répond aux questions ouvertes QO-001 et QO-002 (modèle et versions), QO-017 (stockage durable) et QO-018 (voix française hors ligne).
 
@@ -12,6 +12,9 @@ Cette page vérifie, sur un vrai téléphone Android, ce dont l'application Ongl
 4. **Données fictives** : écriture et relecture d'une journée inventée dans la base du téléphone, et compteur de visites pour vérifier que les données survivent à la fermeture.
 5. **Voix française** : liste des voix françaises, en précisant celles qui sont sur le téléphone (utilisables sans réseau), et lecture d'une phrase.
 6. **Caméra** : aperçu de la caméra arrière et de la caméra avant. Aucune image n'est enregistrée ni envoyée.
+7. **Animation** : un chaudron dessiné en SVG se balance pendant trois secondes ; la page compte les images par seconde.
+8. **Son fabriqué** : quatre notes jouées par le téléphone, sans fichier son (DEC-039).
+9. **Export de fichier** : enregistrement d'un fichier de sauvegarde fictif, partage de ce fichier, puis relecture du fichier choisi sur le téléphone.
 
 ## Ce qu'elle ne fait pas
 
@@ -28,6 +31,8 @@ Cette page vérifie, sur un vrai téléphone Android, ce dont l'application Ongl
 5. Appuyer sur « Demander le stockage durable ».
 6. Appuyer sur « Écouter la sorcière » et cocher la case si la phrase est entendue en français.
 7. Essayer les deux caméras, accepter l'autorisation, cocher la case si l'image apparaît, puis « Arrêter la caméra ».
-8. Passer en mode avion, fermer l'application, la rouvrir : cocher la case si elle s'affiche ; refaire « Écouter la sorcière » et cocher la case correspondante.
-9. Appuyer sur « Copier le compte rendu » et coller le texte dans le fil du projet (jamais dans le dépôt).
-10. Quitter le mode avion. Une fois les deux téléphones testés, désinstaller « Test sorcière » (appui long sur l'icône, puis « Désinstaller »).
+8. Appuyer sur « Faire bouger le chaudron » et sur « Jouer la petite musique », cocher les cases.
+9. Appuyer sur « Enregistrer le fichier de sauvegarde », vérifier sa présence dans « Mes fichiers », puis le choisir avec « Relire un fichier de sauvegarde ». Essayer aussi « Partager le fichier de sauvegarde » (on peut annuler le partage).
+10. Passer en mode avion, fermer l'application, la rouvrir : cocher la case si elle s'affiche ; refaire « Écouter la sorcière » et cocher la case correspondante.
+11. Appuyer sur « Copier le compte rendu » et coller le texte dans le fil du projet (jamais dans le dépôt).
+12. Quitter le mode avion. Une fois les deux téléphones testés, désinstaller « Test sorcière » (appui long sur l'icône, puis « Désinstaller »).

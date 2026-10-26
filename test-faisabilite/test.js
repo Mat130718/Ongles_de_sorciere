@@ -1,19 +1,23 @@
 // Ongle de sorcière - Page de test de faisabilité
 // Version 1.0 du 26/10/2026 : première version.
 // Version 1.1 du 26/10/2026 : la voix de France passe avant les autres voix françaises.
+// Version 1.2 du 26/10/2026 : trois essais de plus (animation SVG, son fabriqué, export et relecture d'un fichier).
 // Chaque vérification remplit sa section et le compte rendu à copier.
 // Rien n'est envoyé : la page ne fait aucun appel réseau, hormis le chargement de ses propres fichiers.
 'use strict';
 
-const VERSION = '1.1';
-const resultats = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
+const VERSION = '1.2';
+const resultats = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [] };
 const TITRES = {
   1: 'Téléphone',
   2: 'Installation et hors ligne',
   3: 'Stockage durable',
   4: 'Données fictives',
   5: 'Voix française',
-  6: 'Caméra'
+  6: 'Caméra',
+  7: 'Animation',
+  8: 'Son fabriqué',
+  9: 'Export de fichier'
 };
 
 function $(id) { return document.getElementById(id); }
@@ -33,7 +37,7 @@ function enMo(octets) {
 function composerCompteRendu() {
   const lignes = ['Ongle de sorcière - Test de faisabilité v' + VERSION,
     'Date : ' + new Date().toLocaleString('fr-FR')];
-  for (const numero of [1, 2, 3, 4, 5, 6]) {
+  for (const numero of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
     lignes.push('', numero + '. ' + TITRES[numero]);
     for (const ligne of resultats[numero]) lignes.push('- ' + ligne);
   }
@@ -41,7 +45,10 @@ function composerCompteRendu() {
     '- Rouverte en mode avion : ' + ouiNon($('c-hors-ligne').checked),
     '- Voix entendue : ' + ouiNon($('c-voix').checked),
     '- Voix entendue en mode avion : ' + ouiNon($('c-voix-avion').checked),
-    '- Image de la caméra vue : ' + ouiNon($('c-camera').checked));
+    '- Image de la caméra vue : ' + ouiNon($('c-camera').checked),
+    '- Chaudron vu bouger sans saccade : ' + ouiNon($('c-animation').checked),
+    '- Petite musique entendue : ' + ouiNon($('c-son').checked),
+    '- Fichier retrouvé sur le téléphone : ' + ouiNon($('c-export').checked));
   $('texte').value = lignes.join('\n');
 }
 
@@ -275,8 +282,128 @@ $('b-camera-arriere').addEventListener('click', () => essayerCamera('environment
 $('b-camera-avant').addEventListener('click', () => essayerCamera('user'));
 $('b-camera-stop').addEventListener('click', arreterCamera);
 
+// 7. Animation d'un dessin SVG : le chaudron se balance pendant trois secondes,
+// et la page compte les images affichées par seconde.
+$('b-animation').addEventListener('click', () => {
+  $('b-animation').disabled = true;
+  const debut = performance.now();
+  let images = 0;
+  let pire = 0;
+  let precedente = debut;
+  function etape(maintenant) {
+    images += 1;
+    pire = Math.max(pire, maintenant - precedente);
+    precedente = maintenant;
+    const t = (maintenant - debut) / 1000;
+    $('chaudron').setAttribute('transform', 'rotate(' + (8 * Math.sin(t * 4)).toFixed(2) + ' 100 100)');
+    $('bulle').setAttribute('cy', (40 - ((t * 30) % 30)).toFixed(1));
+    if (maintenant - debut < 3000) {
+      requestAnimationFrame(etape);
+      return;
+    }
+    $('chaudron').removeAttribute('transform');
+    $('b-animation').disabled = false;
+    noter(7, [
+      'Images par seconde : ' + Math.round(images / ((maintenant - debut) / 1000)),
+      'Plus longue attente entre deux images : ' + Math.round(pire) + ' ms'
+    ]);
+  }
+  requestAnimationFrame(etape);
+});
+
+// 8. Son fabriqué par programme (DEC-039) : quatre notes jouées par le téléphone, sans fichier.
+let contexteAudio = null;
+
+$('b-son').addEventListener('click', async () => {
+  const Audio = window.AudioContext || window.webkitAudioContext;
+  if (!Audio) {
+    noter(8, ['Son fabriqué non pris en charge']);
+    return;
+  }
+  try {
+    contexteAudio = contexteAudio || new Audio();
+    await contexteAudio.resume();
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    const depart = contexteAudio.currentTime + 0.05;
+    notes.forEach((frequence, rang) => {
+      const oscillateur = contexteAudio.createOscillator();
+      const volume = contexteAudio.createGain();
+      const debut = depart + rang * 0.18;
+      oscillateur.type = 'triangle';
+      oscillateur.frequency.value = frequence;
+      volume.gain.setValueAtTime(0.0001, debut);
+      volume.gain.exponentialRampToValueAtTime(0.3, debut + 0.02);
+      volume.gain.exponentialRampToValueAtTime(0.0001, debut + 0.16);
+      oscillateur.connect(volume).connect(contexteAudio.destination);
+      oscillateur.start(debut);
+      oscillateur.stop(debut + 0.17);
+    });
+    noter(8, ['Moteur de son : ' + contexteAudio.state + ', ' + contexteAudio.sampleRate + ' Hz']);
+  } catch (erreur) {
+    noter(8, ['Son en échec : ' + erreur.name]);
+  }
+});
+
+// 9. Export d'un fichier de sauvegarde fictif, puis relecture du fichier choisi sur le téléphone.
+const SAUVEGARDE = { application: 'ongle-de-sorciere-test', version: 1,
+  jours: [{ jour: '2026-10-26', ongles: [1, 0, 1, 1, 1], crapauds: 1 }] };
+const NOM_FICHIER = 'sauvegarde-test-sorciere.json';
+const lignesExport = {};
+
+function noterExport(cle, ligne) {
+  lignesExport[cle] = ligne;
+  noter(9, Object.values(lignesExport));
+}
+
+function fichierSauvegarde() {
+  return new File([JSON.stringify(SAUVEGARDE, null, 2)], NOM_FICHIER, { type: 'application/json' });
+}
+
+$('b-exporter').addEventListener('click', () => {
+  try {
+    const adresse = URL.createObjectURL(fichierSauvegarde());
+    const lien = document.createElement('a');
+    lien.href = adresse;
+    lien.download = NOM_FICHIER;
+    document.body.appendChild(lien);
+    lien.click();
+    lien.remove();
+    setTimeout(() => URL.revokeObjectURL(adresse), 10000);
+    noterExport('enregistrer', 'Enregistrement demandé : ' + NOM_FICHIER);
+  } catch (erreur) {
+    noterExport('enregistrer', 'Enregistrement en échec : ' + erreur.name);
+  }
+});
+
+$('b-partager').addEventListener('click', async () => {
+  const fichier = fichierSauvegarde();
+  if (!navigator.canShare || !navigator.canShare({ files: [fichier] })) {
+    noterExport('partager', 'Partage de fichier : non pris en charge');
+    return;
+  }
+  try {
+    await navigator.share({ files: [fichier], title: 'Sauvegarde de test' });
+    noterExport('partager', 'Partage de fichier : OK');
+  } catch (erreur) {
+    noterExport('partager', 'Partage de fichier : ' + (erreur.name === 'AbortError' ? 'annulé' : 'échec (' + erreur.name + ')'));
+  }
+});
+
+$('f-relire').addEventListener('change', async () => {
+  const fichier = $('f-relire').files[0];
+  if (!fichier) return;
+  try {
+    const relu = JSON.parse(await fichier.text());
+    const identique = JSON.stringify(relu) === JSON.stringify(SAUVEGARDE);
+    noterExport('relire', 'Relecture du fichier : ' + (identique ? 'OK, contenu identique' : 'fichier lu, contenu différent'));
+  } catch (erreur) {
+    noterExport('relire', 'Relecture du fichier : échec (' + erreur.name + ')');
+  }
+  $('f-relire').value = '';
+});
+
 // Compte rendu : cases à cocher et bouton de copie.
-for (const id of ['c-hors-ligne', 'c-voix', 'c-voix-avion', 'c-camera']) {
+for (const id of ['c-hors-ligne', 'c-voix', 'c-voix-avion', 'c-camera', 'c-animation', 'c-son', 'c-export']) {
   $(id).addEventListener('change', composerCompteRendu);
 }
 
