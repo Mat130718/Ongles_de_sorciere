@@ -7,7 +7,7 @@ Application web installable (PWA) qui aide un enfant à ne plus se ronger les on
 - **Gratuite et sans compte** : publiée sur GitHub Pages, installée depuis Chrome sur l'écran d'accueil d'un téléphone Android.
 - **Entièrement locale** : toutes les données et les photos restent sur le téléphone. Aucun serveur, aucun envoi, aucune statistique.
 - **Hors ligne** : une fois installée, l'application fonctionne sans connexion.
-- **Sans composant tiers** : HTML, CSS et JavaScript écrits à la main, publiés tels quels, sans étape de fabrication.
+- **Sans composant tiers** : HTML, CSS et JavaScript écrits à la main, publiés tels quels, sans étape de fabrication. Les ongles, leurs effets et les sons sont fabriqués par programme.
 - **Bienveillante** : un ongle rongé donne un crapaud rigolo, jamais une punition.
 
 ## État du projet

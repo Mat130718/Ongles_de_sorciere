@@ -19,8 +19,9 @@ Ce fichier rassemble les règles de travail du projet, pour qu'une nouvelle sess
 ## Règles du dépôt
 
 - Dépôt public, sans aucune donnée personnelle : ni prénom, ni photo, ni voix, ni document familial (DEC-029). GitHub Pages gratuit exige un dépôt public (réponse à QO-016).
-- Aucun composant tiers, ni dans l'application ni pour la fabriquer : HTML, CSS et JavaScript écrits à la main, publiés tels quels (DEC-038).
-- Dessins en SVG et sons fabriqués par programme, sans fichier externe (DEC-039).
+- Aucun composant tiers, ni dans l'application ni pour la fabriquer : HTML, CSS et JavaScript écrits à la main, publiés tels quels (DEC-038, précisée par DEC-091).
+- Les mains, la sorcière et les symboles du calendrier sont des images produites par une IA de dessin choisie par Mat, qui s'assure du droit d'usage. Claude rédige les consignes de dessin, sans aucune donnée personnelle, puis retire le fond des images et les allège (WebP transparent). Le programme dessine les ongles, les effets et les animations, et fabrique les sons (DEC-091, remplace DEC-039).
+- Les deux mains sont croisées en diagonale sur un seul écran, sans texte ; un balayage agrandit l'une ou l'autre (DEC-092).
 - Tests automatiques des règles de points avec l'outil de test intégré à Node.js.
 - Chaque ajout passe par une branche et une pull request. Claude ouvre la pull request, l'assigne à Mat et lui en donne le lien ; Mat la relit et la fusionne (DEC-070, remplace DEC-068).
 
