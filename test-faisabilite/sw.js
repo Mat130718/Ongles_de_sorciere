@@ -1,7 +1,7 @@
-// Ongle de sorcière - Service de fonctionnement hors ligne de la page de test, version 1.0.
+// Ongle de sorcière - Service de fonctionnement hors ligne de la page de test, version 1.1.
 // Il garde une copie des fichiers de la page sur le téléphone et la sert sans réseau.
 // Il ne contacte aucun autre site.
-const CACHE = 'test-faisabilite-v1';
+const CACHE = 'test-faisabilite-v2';
 const FICHIERS = ['./', 'index.html', 'style.css', 'test.js', 'manifest.webmanifest', 'icone.svg'];
 
 self.addEventListener('install', (evenement) => {

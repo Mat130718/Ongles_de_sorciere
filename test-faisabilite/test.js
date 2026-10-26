@@ -1,10 +1,11 @@
 // Ongle de sorcière - Page de test de faisabilité
 // Version 1.0 du 26/10/2026 : première version.
+// Version 1.1 du 26/10/2026 : la voix de France passe avant les autres voix françaises.
 // Chaque vérification remplit sa section et le compte rendu à copier.
 // Rien n'est envoyé : la page ne fait aucun appel réseau, hormis le chargement de ses propres fichiers.
 'use strict';
 
-const VERSION = '1.0';
+const VERSION = '1.1';
 const resultats = { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] };
 const TITRES = {
   1: 'Téléphone',
@@ -212,7 +213,12 @@ async function testerVoix() {
   }
   const voix = await listerVoix();
   const francaises = voix.filter((v) => /^fr/i.test(v.lang));
-  voixChoisie = francaises.find((v) => v.localService) || francaises[0] || null;
+  // Le téléphone écrit la langue « fr-FR » ou « fr_FR » : on préfère la voix de France, sur le téléphone.
+  const deFrance = (v) => /^fr[-_]FR$/i.test(v.lang);
+  voixChoisie = francaises.find((v) => deFrance(v) && v.localService)
+    || francaises.find(deFrance)
+    || francaises.find((v) => v.localService)
+    || francaises[0] || null;
   const lignes = ['Voix disponibles : ' + voix.length + ', dont françaises : ' + francaises.length];
   for (const v of francaises) {
     lignes.push(v.name + ' (' + v.lang + ', ' + (v.localService ? 'sur le téléphone' : 'en ligne') + ')');
