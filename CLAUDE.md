@@ -29,4 +29,4 @@ Ce fichier rassemble les règles de travail du projet, pour qu'une nouvelle sess
 - Page de test autonome dans `test-faisabilite/`, publiée par GitHub Pages depuis `main` (DEC-065, DEC-067).
 - Le compte rendu s'affiche à l'écran ; Mat le colle dans le fil de l'étape 2, jamais dans le dépôt (DEC-066).
 - Test d'abord sur le téléphone de Mat, puis sur le téléphone cible, puis désinstallation (DEC-069).
-- Étape close le 26/10/2026 : tous les essais sont réussis sur les deux téléphones, sauf le partage direct d'un fichier, écarté par DEC-071. Les résultats sont dans Doc#5 et Doc#12, et la page reste dans le dépôt pour mémoire.
+- Étape close le 26/10/2026 (DEC-072) : tous les essais sont réussis sur les deux téléphones, sauf le partage direct d'un fichier, écarté par DEC-071. Les résultats sont dans Doc#5 et Doc#12, et la page reste dans le dépôt pour mémoire.
