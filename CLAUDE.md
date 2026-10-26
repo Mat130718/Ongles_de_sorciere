@@ -22,7 +22,7 @@ Ce fichier rassemble les règles de travail du projet, pour qu'une nouvelle sess
 - Aucun composant tiers, ni dans l'application ni pour la fabriquer : HTML, CSS et JavaScript écrits à la main, publiés tels quels (DEC-038).
 - Dessins en SVG et sons fabriqués par programme, sans fichier externe (DEC-039).
 - Tests automatiques des règles de points avec l'outil de test intégré à Node.js.
-- Chaque ajout passe par une branche et une pull request relue et fusionnée par Mat. Mat ouvre lui-même la pull request depuis le lien fourni (DEC-068).
+- Chaque ajout passe par une branche et une pull request. Claude ouvre la pull request, l'assigne à Mat et lui en donne le lien ; Mat la relit et la fusionne (choix de Mat du 26/10/2026, remplace DEC-068).
 
 ## Étape 2, test de faisabilité
 
