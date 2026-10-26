@@ -1,4 +1,4 @@
-# Ongle de sorcière
+# Ongles de sorcière
 
 Application web installable (PWA) qui aide un enfant à ne plus se ronger les ongles, sous la forme d'un petit jeu du soir : une main de sorcière dont les ongles poussent chaque jour où les vrais ongles sont préservés.
 
@@ -12,7 +12,7 @@ Application web installable (PWA) qui aide un enfant à ne plus se ronger les on
 
 ## État du projet
 
-Cadrage terminé, documents de référence en cours de rédaction. Le développement n'a pas commencé.
+Cadrage, documents de référence et test de faisabilité terminés ; conception du palier 1 en cours. Le développement n'a pas commencé.
 
 ## Règle du dépôt
 

@@ -2,7 +2,7 @@
 
 Version 1.2 du 26/10/2026 : trois essais de plus, prévus au plan de test (1.1 : la voix de France passe avant les autres voix françaises ; 1.0 : première version).
 
-Cette page vérifie, sur un vrai téléphone Android, ce dont l'application Ongle de sorcière aura besoin. Elle répond aux questions ouvertes QO-001 et QO-002 (modèle et versions), QO-017 (stockage durable) et QO-018 (voix française hors ligne).
+Cette page vérifie, sur un vrai téléphone Android, ce dont l'application Ongles de sorcière aura besoin. Elle répond aux questions ouvertes QO-001 et QO-002 (modèle et versions), QO-017 (stockage durable) et QO-018 (voix française hors ligne).
 
 ## Ce qu'elle vérifie
 

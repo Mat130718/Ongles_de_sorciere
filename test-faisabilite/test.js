@@ -1,4 +1,4 @@
-// Ongle de sorcière - Page de test de faisabilité
+// Ongles de sorcière - Page de test de faisabilité
 // Version 1.0 du 26/10/2026 : première version.
 // Version 1.1 du 26/10/2026 : la voix de France passe avant les autres voix françaises.
 // Version 1.2 du 26/10/2026 : trois essais de plus (animation SVG, son fabriqué, export et relecture d'un fichier).
@@ -35,7 +35,7 @@ function enMo(octets) {
 }
 
 function composerCompteRendu() {
-  const lignes = ['Ongle de sorcière - Test de faisabilité v' + VERSION,
+  const lignes = ['Ongles de sorcière - Test de faisabilité v' + VERSION,
     'Date : ' + new Date().toLocaleString('fr-FR')];
   for (const numero of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
     lignes.push('', numero + '. ' + TITRES[numero]);
