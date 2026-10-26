@@ -1,4 +1,4 @@
-// Ongle de sorcière - Service de fonctionnement hors ligne de la page de test, version 1.2.
+// Ongles de sorcière - Service de fonctionnement hors ligne de la page de test, version 1.2.
 // Il garde une copie des fichiers de la page sur le téléphone et la sert sans réseau.
 // Il ne contacte aucun autre site.
 const CACHE = 'test-faisabilite-v3';

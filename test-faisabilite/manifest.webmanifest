@@ -1,7 +1,7 @@
 {
-  "name": "Ongle de sorcière - Test",
+  "name": "Ongles de sorcière - Test",
   "short_name": "Test sorcière",
-  "description": "Page de test de faisabilité de l'application Ongle de sorcière.",
+  "description": "Page de test de faisabilité de l'application Ongles de sorcière.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",
