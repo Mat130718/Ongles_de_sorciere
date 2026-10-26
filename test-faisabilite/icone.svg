@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icône provisoire du test : un doigt vert à long ongle violet, sur fond violet foncé. -->
+  <rect width="512" height="512" rx="96" fill="#3b1f5c"/>
+  <rect x="196" y="190" width="120" height="260" rx="60" fill="#7cc46a"/>
+  <path d="M206 210 Q256 40 306 210 Q256 170 206 210 Z" fill="#b48ae0"/>
+  <circle cx="380" cy="120" r="10" fill="#ffe27a"/>
+  <circle cx="130" cy="170" r="7" fill="#ffe27a"/>
+  <circle cx="400" cy="330" r="6" fill="#ffe27a"/>
+</svg>

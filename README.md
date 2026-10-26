@@ -22,6 +22,6 @@ Ce dépôt est public. Il ne contient **aucune donnée personnelle** : ni préno
 
 Le contenu sera ajouté au fil des étapes, chaque fois par une pull request relue :
 
-- la page de test de faisabilité, à ouvrir sur le téléphone cible ;
+- la page de test de faisabilité, à ouvrir sur le téléphone cible (dossier `test-faisabilite`, voir son `LISEZMOI.md`) ;
 - l'application elle-même ;
 - les tests automatiques des règles de points, lancés avec l'outil de test intégré à Node.js.
