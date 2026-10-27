@@ -4,7 +4,7 @@
 // sécurité de la page les bloque).
 
 import { isSoundEnabled, play, setSoundEnabled } from './sound.js';
-import { TEXTS } from './texts.js';
+import { PARENT_TEXTS, TEXTS } from './texts.js';
 import * as data from './data.js';
 
 const ICONS = {
@@ -104,6 +104,25 @@ export function topBar(navigate, { back = false, now = new Date() } = {}) {
   paint();
   bar.append(sound);
   return bar;
+}
+
+// Haut des écrans parents : retour au menu parent, et le titre.
+export function parentHeader(container, navigate, title) {
+  container.dataset.tone = 'parent';
+  const bar = element('div', 'top-bar');
+  const back = element('button', 'small-button', PARENT_TEXTS.menu.back);
+  back.type = 'button';
+  back.addEventListener('click', () => navigate('parent-menu'));
+  bar.append(back);
+  container.append(bar, element('h1', 'screen-title', title));
+}
+
+// Petit bouton sobre des écrans parents ; strong : bouton violet.
+export function smallButton(label, onClick, { strong = false } = {}) {
+  const button = element('button', `small-button${strong ? ' strong' : ''}`, label);
+  button.type = 'button';
+  button.addEventListener('click', onClick);
+  return button;
 }
 
 // Feuille qui monte du bas de l'écran, par-dessus un voile. Toucher le voile la ferme.

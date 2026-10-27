@@ -38,6 +38,25 @@ export function render(container, navigate) {
     content.append(TEXTS.home.forgotten(forgotten.length), choices);
     bubble = content;
   }
+  // Semaine fermée : la sorcière annonce les bonus de la semaine, une seule fois.
+  const sealed = data.weekToAnnounce(now);
+  if (sealed) {
+    const bonuses = [];
+    if (sealed.perfectBonus) bonuses.push(TEXTS.home.perfectWeekBonus);
+    if (sealed.honestyBonus) bonuses.push(TEXTS.home.honestyBonus);
+    const content = element('div');
+    const choices = element('div', 'choices');
+    const thanksButton = element('button', 'yes', TEXTS.home.thanksAnnouncement);
+    thanksButton.type = 'button';
+    thanksButton.addEventListener('click', async () => {
+      await data.saveSetting('announcedWeek', sealed.monday);
+      navigate('home');
+    });
+    choices.append(thanksButton);
+    // Une semaine avec un crapaud rouge repart sur un ton léger, sans revenir dessus.
+    content.append(sealed.honestyAvailable ? TEXTS.home.weekSealed(bonuses) : TEXTS.home.weekSealedFresh(bonuses), choices);
+    bubble = content;
+  }
 
   // Ce soir déjà raconté : ses ongles fondus restent visibles jusqu'au lendemain.
   const tonight = days.find((day) => day.date === today);
@@ -55,7 +74,7 @@ export function render(container, navigate) {
   parentKey.append(icon('key'));
   parentKey.addEventListener('click', () => navigate('parent-code'));
 
-  container.append(topBar(navigate, { now }), witch(1, bubble).element, hands.element);
+  container.append(topBar(navigate, { now }), witch(sealed ? 5 : 1, bubble).element, hands.element);
   if (data.reviewDue(now)) {
     const banner = element('div', 'banner');
     banner.append(icon('key'), TEXTS.home.sundayReminder);
