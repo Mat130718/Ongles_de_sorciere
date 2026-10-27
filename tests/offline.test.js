@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
-// Fichiers publiés de l'application : les fichiers de la racine et les dossiers css, img et js.
+// Fichiers publiés de l'application : les fichiers de la racine et les dossiers css, fonts, img et js.
 function appFiles() {
   const files = ['index.html', 'manifest.webmanifest'];
   const walk = (dir) => {
@@ -19,7 +19,7 @@ function appFiles() {
       else files.push(relative(root, join(root, path)).split('\\').join('/'));
     }
   };
-  ['css', 'img', 'js'].forEach(walk);
+  ['css', 'fonts', 'img', 'js'].forEach(walk);
   return files.sort();
 }
 
@@ -47,7 +47,10 @@ test('EX-042 : chaque fichier listé par le service worker existe', () => {
 test('EX-043 : aucun fichier de l\u2019application n\u2019appelle une adresse extérieure', () => {
   // Seules exceptions : l'espace de noms des dessins SVG, qui n'est pas un appel réseau.
   const allowed = ['http://www.w3.org/2000/svg'];
-  for (const file of [...appFiles(), 'sw.js']) {
+  // Seuls les fichiers de code sont lus : les images et les polices sont des fichiers binaires,
+  // et le texte des licences des polices cite des adresses sans jamais les appeler.
+  const code = /\.(html|css|js|svg|webmanifest)$/;
+  for (const file of [...appFiles(), 'sw.js'].filter((name) => code.test(name))) {
     const source = readFileSync(join(root, file), 'utf8');
     const urls = source.match(/(https?:)?\/\/[a-z0-9.-]+\.[a-z]{2,}[^\s'"`)]*/gi) ?? [];
     const external = urls.filter((url) => !allowed.includes(url));

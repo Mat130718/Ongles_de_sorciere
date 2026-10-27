@@ -5,7 +5,7 @@
 // seulement depuis l'accueil, jamais au milieu d'une déclaration (DEC-095).
 
 // À changer à chaque version publiée, pour que le téléphone récupère les nouveaux fichiers.
-const VERSION = '0.4.0';
+const VERSION = '0.5.0';
 const CACHE = `ongles-de-sorciere-${VERSION}`;
 
 // Tous les fichiers de l'application. Un test automatique vérifie que la liste est complète.
@@ -14,12 +14,27 @@ const FILES = [
   'index.html',
   'manifest.webmanifest',
   'css/app.css',
+  'fonts/OFL-atkinsonhyperlegible.txt',
+  'fonts/OFL-grandstander.txt',
+  'fonts/atkinson-400.woff2',
+  'fonts/atkinson-700.woff2',
+  'fonts/grandstander.woff2',
   'img/icon.svg',
   'img/main.webp',
+  'img/witch-1.webp',
+  'img/witch-2.webp',
+  'img/witch-3.webp',
+  'img/witch-4.webp',
+  'img/witch-5.webp',
+  'img/witch-6.webp',
+  'img/witch-8.webp',
+  'img/witch-9.webp',
   'js/app.js',
   'js/backup.js',
   'js/calendar.js',
+  'js/data.js',
   'js/hands.js',
+  'js/parent-code.js',
   'js/rules.js',
   'js/screens/backup.js',
   'js/screens/calendar.js',
@@ -34,6 +49,8 @@ const FILES = [
   'js/screens/weekly-review.js',
   'js/sound.js',
   'js/store.js',
+  'js/texts.js',
+  'js/ui.js',
 ];
 
 self.addEventListener('install', (event) => {

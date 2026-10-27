@@ -1,7 +1,8 @@
 // Ongles de sorcière - Démarrage et navigation entre écrans.
-// Chaque écran est un module de js/screens/ qui exporte une fonction render(container, navigate).
+// Chaque écran est un module de js/screens/ qui exporte une fonction render(container, navigate, params).
 // Tout part de l'accueil et y revient (EX-040).
 
+import * as data from './data.js';
 import * as home from './screens/home.js';
 import * as firstLaunch from './screens/first-launch.js';
 import * as declaration from './screens/declaration.js';
@@ -29,12 +30,15 @@ export const screens = {
 const container = document.getElementById('app');
 let currentScreen = null;
 
-function navigate(name) {
+function navigate(name, params = {}) {
+  // Tant que le premier lancement n'est pas fini, il n'y a que lui (EX-039).
+  if (!data.isSetUp()) name = 'first-launch';
   const screen = screens[name] ?? screens.home;
   currentScreen = screens[name] ? name : 'home';
   container.replaceChildren();
   container.dataset.screen = currentScreen;
-  screen.render(container, navigate);
+  delete container.dataset.tone;
+  screen.render(container, navigate, params);
   window.scrollTo(0, 0);
 }
 
@@ -67,5 +71,22 @@ async function setUpServiceWorker() {
   });
 }
 
-navigate('home');
-setUpServiceWorker().catch(() => {});
+// Au retour au premier plan, les semaines oubliées sont fermées, et l'accueil est
+// redessiné pour suivre l'heure (bulle, bouton, rappel du dimanche).
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible' || !data.isSetUp()) return;
+  data.closeDueWeeks().then(() => { if (currentScreen === 'home') navigate('home'); }).catch(() => {});
+});
+
+async function start() {
+  try {
+    await data.load();
+  } catch {
+    // Base illisible : l'écran le dit, sans rien effacer.
+    container.textContent = 'Les données du téléphone n’ont pas pu être lues. Ferme l’application et rouvre-la.';
+    return;
+  }
+  navigate('home');
+}
+
+start().then(() => setUpServiceWorker()).catch(() => {});
