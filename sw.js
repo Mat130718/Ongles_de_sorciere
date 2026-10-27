@@ -5,7 +5,7 @@
 // seulement depuis l'accueil, jamais au milieu d'une déclaration (DEC-095).
 
 // À changer à chaque version publiée, pour que le téléphone récupère les nouveaux fichiers.
-const VERSION = '0.7.0';
+const VERSION = '0.7.1';
 const CACHE = `ongles-de-sorciere-${VERSION}`;
 
 // Tous les fichiers de l'application. Un test automatique vérifie que la liste est complète.
@@ -19,6 +19,10 @@ const FILES = [
   'fonts/atkinson-400.woff2',
   'fonts/atkinson-700.woff2',
   'fonts/grandstander.woff2',
+  'img/icon-192.png',
+  'img/icon-512.png',
+  'img/icon-maskable-192.png',
+  'img/icon-maskable-512.png',
   'img/icon.svg',
   'img/main.webp',
   'img/witch-1.webp',
