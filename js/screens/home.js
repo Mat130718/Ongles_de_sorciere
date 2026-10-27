@@ -10,6 +10,9 @@ import { isEditableByChild } from '../rules.js';
 import { TEXTS } from '../texts.js';
 import { bigButton, element, icon, topBar, witch } from '../ui.js';
 
+// « Plus tard » vaut jusqu'à la prochaine ouverture de l'application.
+let later = false;
+
 export function render(container, navigate) {
   const now = new Date();
   const { today, days, nails } = data.history(now);
@@ -20,6 +23,21 @@ export function render(container, navigate) {
   let bubble = TEXTS.home.invite;
   if (told) bubble = TEXTS.home.thanks;
   else if (!isDeclarationOpen(now)) bubble = TEXTS.home.tooEarly;
+  // Soirs oubliés : la sorcière propose de les rattraper, jusqu'à « Plus tard » (EX-006).
+  const forgotten = data.forgotten(now);
+  if (forgotten.length && !later) {
+    const content = element('div');
+    const choices = element('div', 'choices');
+    const yes = element('button', 'yes', TEXTS.home.forgottenYes);
+    yes.type = 'button';
+    yes.addEventListener('click', () => navigate('catch-up'));
+    const no = element('button', 'no', TEXTS.home.forgottenLater);
+    no.type = 'button';
+    no.addEventListener('click', () => { later = true; navigate('home'); });
+    choices.append(yes, no);
+    content.append(TEXTS.home.forgotten(forgotten.length), choices);
+    bubble = content;
+  }
 
   // Ce soir déjà raconté : ses ongles fondus restent visibles jusqu'au lendemain.
   const tonight = days.find((day) => day.date === today);
