@@ -35,7 +35,11 @@ const ZOOMS = {
 
 // Durée de la fonte d'un ongle, en millisecondes (environ 1,5 s, écran 3).
 export const MELT_DURATION = 1500;
-const SWIPE_DISTANCE = 40;
+// Balayage : au moins 50 points à l'horizontale, nettement plus qu'à la verticale (comme la maquette).
+const SWIPE_DISTANCE = 50;
+const SWIPE_SLOPE = 1.3;
+// Un toucher qui suit de près un balayage est ignoré.
+const SWIPE_CLICK_GUARD = 350;
 
 let gradientCount = 0;
 
@@ -148,6 +152,7 @@ export function createHands({ preserved, melted = [], interactive = false, swipe
   }, [svg('defs', {}, [gradient]), zoom]);
 
   let lengths = [...preserved];
+  let swipedAt = 0;
   const state = new Set(melted);
   fingers.forEach((finger, index) => paintNail(finger, lengths[index], state.has(index)));
 
@@ -165,7 +170,8 @@ export function createHands({ preserved, melted = [], interactive = false, swipe
       onToggle?.(index, nowMelted);
     };
     fingers.forEach((finger) => {
-      finger.addEventListener('click', () => toggle(finger));
+      // Un balayage qui commence sur un doigt ne doit pas faire fondre son ongle.
+      finger.addEventListener('click', () => { if (Date.now() - swipedAt > SWIPE_CLICK_GUARD) toggle(finger); });
       finger.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggle(finger); }
       });
@@ -188,16 +194,19 @@ export function createHands({ preserved, melted = [], interactive = false, swipe
   if (swipe) {
     container.classList.add('swipe');
     // Balayage vers la droite : la main gauche vient ; vers la gauche : la main droite (DEC-092).
-    let startX = null;
-    container.addEventListener('pointerdown', (event) => { startX = event.clientX; });
+    let start = null;
+    container.addEventListener('pointerdown', (event) => { start = { x: event.clientX, y: event.clientY }; });
     container.addEventListener('pointerup', (event) => {
-      if (startX === null) return;
-      const distance = event.clientX - startX;
-      startX = null;
-      if (distance > SWIPE_DISTANCE) setFocus(focus === 'right' ? 'both' : 'left');
-      else if (distance < -SWIPE_DISTANCE) setFocus(focus === 'left' ? 'both' : 'right');
+      if (!start) return;
+      const dx = event.clientX - start.x;
+      const dy = event.clientY - start.y;
+      start = null;
+      if (Math.abs(dx) < SWIPE_DISTANCE || Math.abs(dx) < Math.abs(dy) * SWIPE_SLOPE) return;
+      swipedAt = Date.now();
+      if (dx > 0) setFocus(focus === 'right' ? 'both' : 'left');
+      else setFocus(focus === 'left' ? 'both' : 'right');
     });
-    container.addEventListener('pointercancel', () => { startX = null; });
+    container.addEventListener('pointercancel', () => { start = null; });
 
     const row = document.createElement('div');
     row.className = 'focus-buttons';

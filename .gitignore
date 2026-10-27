@@ -65,3 +65,13 @@ desktop.ini
 # Exceptions validées
 # Main de sorcière, validée sur la maquette par l'enfant (DEC-091), sans métadonnées.
 !img/main.webp
+# Sorcière provisoire de la maquette validée par l'enfant (DEC-116), une image par expression,
+# sans métadonnées. Remplacée par les images définitives (US-030).
+!img/witch-1.webp
+!img/witch-2.webp
+!img/witch-3.webp
+!img/witch-4.webp
+!img/witch-5.webp
+!img/witch-6.webp
+!img/witch-8.webp
+!img/witch-9.webp
