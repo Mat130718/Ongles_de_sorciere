@@ -322,7 +322,7 @@ test('DEC-103 et bilan : dimanche pas encore raconté, jours à compléter, sema
   assert.equal(weekToReview({ ...input, weeks: [closedWeekRecord(MONDAY, true, atLocal(SUNDAY, 20))] }), NEXT_MONDAY);
 });
 
-test('Jours d’avant le premier lancement : neutres, ils n’empêchent pas la semaine parfaite', () => {
+test('TA-21 DEC-119 : jours d’avant le premier lancement neutres ; ils n’empêchent pas la semaine parfaite', () => {
   // Installation le mercredi 4 novembre.
   const firstLaunch = '2026-11-04';
   const weeks = [closedWeekRecord(MONDAY, true, atLocal(SUNDAY, 20))];

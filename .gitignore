@@ -52,6 +52,7 @@
 sauvegarde*.json
 *-sauvegarde*.json
 backup*.json
+ongles-de-sorciere-*.json
 
 # Environnement de développement
 node_modules/
