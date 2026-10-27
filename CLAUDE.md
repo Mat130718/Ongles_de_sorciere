@@ -12,9 +12,9 @@ Ce fichier rassemble les règles de travail du projet, pour qu'une nouvelle sess
 ## Méthode
 
 - Méthode de projet : skill `methode-projet-developpement`.
-- Échanges en français, au tutoiement. Les questions sont fermées et numérotées, avec une recommandation marquée. Elles sont posées sur des cartes de choix cliquables, une carte par question, dès que l'outil le permet.
+- Échanges en français, au tutoiement. Les questions sont fermées et numérotées, avec une recommandation marquée. Elles sont posées sur des cartes de choix cliquables, une carte par question, dès que l'outil le permet (DEC-114).
 - Aucune décision silencieuse : tout choix qui engage le projet est soumis à Mat, puis inscrit dans Doc#4.
-- Déroulé en neuf étapes, décrit dans Doc#1. Les étapes 0 (cadrage), 1 (documents de référence) et 2 (test de faisabilité) sont closes.
+- Déroulé en neuf étapes, décrit dans Doc#1. Les étapes 0 (cadrage), 1 (documents de référence), 2 (test de faisabilité) et 3 (conception du palier 1, close le 27/10/2026 par DEC-113) sont closes. L'étape 4, développement du palier 1, est en cours.
 
 ## Règles du dépôt
 
