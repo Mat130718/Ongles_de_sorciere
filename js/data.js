@@ -5,8 +5,8 @@
 
 import { FORMAT_VERSION } from './backup.js';
 import { storyDate } from './calendar.js';
-import { computeHistory, dueAutoClosures, forgottenDates, weekToReview } from './rules.js';
-import { loadAndMigrate, putDay, putWeeks, requestPersistence, setSetting } from './store.js';
+import { computeHistory, dueAutoClosures, forgottenDates, reviewState, weekToReview } from './rules.js';
+import { clearAll, loadAndMigrate, putDay, putWeeks, replaceAll, requestPersistence, setSetting } from './store.js';
 import { setSoundEnabled } from './sound.js';
 
 let data = { days: [], weeks: [], settings: {} };
@@ -39,6 +39,33 @@ export async function saveDay(record) {
   data.days = [...data.days.filter((day) => day.date !== record.date), record];
 }
 
+export async function saveWeek(record) {
+  await putWeeks([record]);
+  data.weeks = [...data.weeks.filter((week) => week.monday !== record.monday), record];
+}
+
+// Toutes les données, pour la sauvegarde.
+export const all = () => data;
+
+// Après une restauration : les données du fichier remplacent tout, le code parent reste (DEC-094).
+export async function restore(fileData, now = new Date()) {
+  await replaceAll(fileData);
+  await load(now);
+}
+
+// Tout effacer (EX-055) : l'application revient au premier lancement.
+export async function eraseAll() {
+  await clearAll();
+  data = { days: [], weeks: [], settings: {} };
+}
+
+// Semaine fermée pas encore annoncée à l'enfant : la plus récente, avec ses bonus.
+export function weekToAnnounce(now = new Date()) {
+  const announced = data.settings.announcedWeek ?? '';
+  const closed = history(now).weeks.filter((week) => week.closed && week.monday > announced);
+  return closed.at(-1) ?? null;
+}
+
 export const dayRecord = (date) => data.days.find((day) => day.date === date) ?? null;
 export const weeks = () => data.weeks;
 
@@ -47,6 +74,8 @@ const context = (now) => ({ days: data.days, weeks: data.weeks, firstLaunch: dat
 export const history = (now = new Date()) => computeHistory(context(now));
 export const forgotten = (now = new Date()) => forgottenDates(context(now));
 export const reviewDue = (now = new Date()) => weekToReview(context(now)) !== null;
+export const weekUnderReview = (now = new Date()) => weekToReview(context(now));
+export const review = (monday, now = new Date()) => reviewState(monday, context(now));
 
 // Semaines oubliées par le parent : fermées toutes seules le lundi à 0 h qui suit le
 // dimanche d'après (RG-005). Appelé au démarrage et au retour au premier plan.

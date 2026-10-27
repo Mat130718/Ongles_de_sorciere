@@ -11,8 +11,6 @@
   --nail-light: #b685e6;
   --line: #4a3d72;
   --accent: #5b2a8c;
-  --accent-soft: #34285a;
-  --on-accent: #f4ecd6;
   --ink: #2a1d45;
   --font-title: 'Grandstander', 'Comic Sans MS', system-ui, sans-serif;
   --font-text: 'Atkinson Hyperlegible', system-ui, sans-serif;
@@ -59,31 +57,9 @@ main {
 
 h1 { margin: 8px 0 4px; font-size: 1.6rem; text-align: center; }
 .screen-title { margin: 0; font-family: var(--font-title); font-weight: 800; font-size: 1.45rem; text-align: center; text-wrap: balance; }
-.note { margin: 0 0 16px; text-align: center; opacity: 0.7; }
 .hint { margin: 0; text-align: center; color: var(--mist); }
 
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
 .stack { display: grid; gap: 14px; }
-
-/* Boutons provisoires des écrans pas encore construits. */
-.button {
-  min-height: var(--touch-min);
-  padding: 12px 20px;
-  border: 0;
-  border-radius: calc(var(--touch-min) / 2);
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-.button.primary { background: var(--accent); color: var(--on-accent); }
-.button.secondary { background: var(--accent-soft); color: var(--text); }
-.button.gold { background: var(--gold); color: var(--ink); }
-.button:active { transform: scale(0.97); }
 
 /* Gros boutons de l'enfant (EX-045). */
 .big {
@@ -204,6 +180,31 @@ main[data-tone="parent"] .code-boxes span.filled { border-color: var(--accent); 
 main[data-tone="parent"] .code-message { color: var(--accent); }
 main[data-tone="parent"] .sheet { background: #fff; color: var(--ink); border-top-color: #d9cfe9; }
 main[data-tone="parent"] .big.second { background: #e3d9f2; color: var(--ink); box-shadow: 0 4px 0 #c4b6dc; }
+main[data-tone="parent"] .card { background: #fff; border-color: #d9cfe9; }
+main[data-tone="parent"] .card h2 { color: #5b4d7a; }
+main[data-tone="parent"] .big-number { color: var(--accent); }
+main[data-tone="parent"] .quiet { color: #6b5f86; }
+main[data-tone="parent"] .bubble { background: #f1ecf8; }
+main[data-tone="parent"] .bubble::before { border-right-color: #f1ecf8; }
+.big[disabled] { opacity: 0.45; cursor: not-allowed; transform: none; }
+.big.danger { background: #f6d6d2; color: #7a2721; box-shadow: none; }
+.card p { margin: 0; }
+.card p + p { margin-top: 6px; }
+.quiet { color: var(--mist); font-size: 0.92rem; }
+.quiet.block { display: block; font-weight: 400; }
+.strong-line { font-weight: 700; }
+.file-name { margin: 0; padding: 6px 8px; border-radius: 8px; background: #f1ecf8; color: var(--ink); font-family: ui-monospace, monospace; font-size: 0.85rem; overflow-wrap: anywhere; }
+.small-button { min-height: 48px; padding: 8px 12px; border: 1px solid #c4b6dc; border-radius: 10px; background: #fff; color: var(--ink); font-size: 0.95rem; font-weight: 700; }
+.small-button.strong { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* Bilan de la semaine : une ligne par soir. */
+.review-row { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #e3d9f2; }
+.review-row:last-child { border-bottom: 0; }
+.review-row strong, .review-row > div > span { display: block; }
+.review-icon svg { width: 40px; height: 40px; }
+.row-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.checkbox { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; font-weight: 700; }
+.checkbox input { flex: none; width: 26px; height: 26px; accent-color: var(--accent); }
 
 /* --- Les deux mains (js/hands.js) --- */
 
