@@ -5,7 +5,7 @@
 // seulement depuis l'accueil, jamais au milieu d'une déclaration (DEC-095).
 
 // À changer à chaque version publiée, pour que le téléphone récupère les nouveaux fichiers.
-const VERSION = '0.7.1';
+const VERSION = '0.7.2';
 const CACHE = `ongles-de-sorciere-${VERSION}`;
 
 // Tous les fichiers de l'application. Un test automatique vérifie que la liste est complète.

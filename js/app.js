@@ -45,11 +45,13 @@ function navigate(name, params = {}) {
 // --- Mise à jour de l'application (DEC-095) ---
 // Une version téléchargée en arrière-plan attend. Elle n'est activée qu'à deux moments, et seulement
 // si l'accueil est affiché : au démarrage, et quand l'application revient au premier plan.
+// Avant la fin du premier lancement, rien n'est encore enregistré : la mise à jour s'active
+// aussi, sinon un téléphone réinitialisé garderait l'ancienne version (et l'ancienne icône).
 
 let registration = null;
 
 function applyPendingUpdate() {
-  if (registration?.waiting && currentScreen === 'home') {
+  if (registration?.waiting && (currentScreen === 'home' || !data.isSetUp())) {
     registration.waiting.postMessage('activate-update');
   }
 }
