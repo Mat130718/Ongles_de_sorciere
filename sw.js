@@ -1,0 +1,59 @@
+// Ongles de sorcière - Service worker.
+// Il garde une copie de tous les fichiers de l'application sur le téléphone et la sert sans réseau (EX-042).
+// Il ne contacte aucun autre site que celui de l'application (EX-043).
+// Une nouvelle version s'installe en arrière-plan, puis attend : c'est l'application qui la déclenche,
+// seulement depuis l'accueil, jamais au milieu d'une déclaration (DEC-095).
+
+// À changer à chaque version publiée, pour que le téléphone récupère les nouveaux fichiers.
+const VERSION = '0.1.0';
+const CACHE = `ongles-de-sorciere-${VERSION}`;
+
+// Tous les fichiers de l'application. Un test automatique vérifie que la liste est complète.
+const FILES = [
+  './',
+  'index.html',
+  'manifest.webmanifest',
+  'css/app.css',
+  'img/icon.svg',
+  'js/app.js',
+  'js/screens/backup.js',
+  'js/screens/calendar.js',
+  'js/screens/catch-up.js',
+  'js/screens/declaration.js',
+  'js/screens/first-launch.js',
+  'js/screens/home.js',
+  'js/screens/parent-code.js',
+  'js/screens/parent-menu.js',
+  'js/screens/placeholder.js',
+  'js/screens/session-end.js',
+  'js/screens/weekly-review.js',
+];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)));
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((names) => Promise.all(
+        names.filter((name) => name.startsWith('ongles-de-sorciere-') && name !== CACHE)
+          .map((name) => caches.delete(name))
+      ))
+      .then(() => self.clients.claim())
+  );
+});
+
+// L'application demande l'activation de la version en attente quand elle est sur l'accueil.
+self.addEventListener('message', (event) => {
+  if (event.data === 'activate-update') self.skipWaiting();
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    caches.open(CACHE)
+      .then((cache) => cache.match(event.request, { ignoreSearch: true }))
+      .then((copy) => copy || fetch(event.request))
+  );
+});

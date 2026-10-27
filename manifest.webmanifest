@@ -1,0 +1,15 @@
+{
+  "name": "Ongles de sorcière",
+  "short_name": "Ongles de sorcière",
+  "description": "Un petit jeu du soir : une main de sorcière dont les ongles poussent chaque jour où les vrais ongles sont préservés.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f1fa",
+  "theme_color": "#3b1f5c",
+  "icons": [
+    { "src": "img/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
