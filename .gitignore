@@ -62,4 +62,6 @@ node_modules/
 Thumbs.db
 desktop.ini
 
-# Exceptions validées (aucune pour l'instant)
+# Exceptions validées
+# Main de sorcière, validée sur la maquette par l'enfant (DEC-091), sans métadonnées.
+!img/main.webp
