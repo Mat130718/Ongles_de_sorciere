@@ -141,6 +141,37 @@ h1 { margin: 8px 0 4px; font-size: 1.6rem; text-align: center; }
 .streak { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-title); font-weight: 700; font-size: 1.1rem; }
 .streak svg { width: 30px; height: 30px; }
 
+.centered { margin: 0; text-align: center; }
+
+/* Choix dans la bulle de la sorcière : « Oui » et « Plus tard ». */
+.choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.choices button { min-height: 52px; padding: 10px 18px; border: 0; border-radius: 12px; font-weight: 700; }
+.choices .yes { background: var(--accent); color: var(--text); }
+.choices .no { background: #e3d9f2; color: var(--ink); }
+
+/* Calendrier : deux semaines de sept jours. */
+.week { display: grid; gap: 6px; }
+.week-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.week-head h2 { margin: 0; font-family: var(--font-title); font-size: 1.1rem; }
+.ribbon { padding: 2px 10px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.day { position: relative; display: grid; justify-items: center; gap: 2px; min-height: 88px; padding: 4px 1px 6px; border: 0; background: transparent; }
+.day .letter { font-size: 0.75rem; font-weight: 700; color: var(--mist); }
+.day .number { font-size: 0.9rem; font-weight: 700; }
+.day .box { position: relative; z-index: 1; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); background: var(--night-2); }
+.day .box svg { width: 36px; height: 36px; }
+.day.today .box { border: 3px solid var(--gold); }
+.day.future .box { border-style: dashed; background: transparent; }
+.day.blank .box { background: transparent; }
+.day.before-start { opacity: 0.35; }
+/* Guirlande d'or entre deux soirs d'une même série. */
+.day.link-left::before, .day.link-right::after { content: ""; position: absolute; top: 46px; z-index: 0; border-top: 4px dotted var(--gold); }
+.day.link-left::before { left: 0; right: 50%; }
+.day.link-right::after { left: 50%; right: 0; }
+.legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; font-size: 0.85rem; color: var(--mist); }
+.legend span { display: flex; align-items: center; gap: 6px; }
+.legend svg { width: 26px; height: 26px; flex: none; }
+
 /* Feuille qui monte du bas. */
 .veil { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; background: rgba(10, 6, 22, 0.72); }
 .sheet {

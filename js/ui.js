@@ -15,7 +15,11 @@ const ICONS = {
   mute: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#f4ecd6"/><path d="M16 9 l5 6 M21 9 l-5 6" stroke="#f4ecd6" stroke-width="2" stroke-linecap="round"/></svg>',
   star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" fill="#f2c14e"/></svg>',
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="#f4ecd6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  // Chapeau pailleté provisoire, en attendant les symboles définitifs (US-030).
+  // Symboles provisoires du calendrier, repris de la maquette, en attendant les images
+  // définitives (US-030) : chapeau pailleté, crapaud, crapaud rouge à petites cornes (DEC-110).
+  toad: '<svg viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="26" rx="16" ry="11" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="12" cy="15" r="6" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="28" cy="15" r="6" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="12" cy="15" r="2.6" fill="#1b1430"/><circle cx="28" cy="15" r="2.6" fill="#1b1430"/><path d="M11 27 Q20 33 29 27" stroke="#1b1430" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  'red-toad': '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8.5 11 Q5 5 8 0.5 Q10 5 13 9.5Z M31.5 11 Q35 5 32 0.5 Q30 5 27 9.5Z" fill="#a8322a" stroke="#7a2721" stroke-width="1.2" stroke-linejoin="round"/><ellipse cx="20" cy="26" rx="16" ry="11" fill="#d65a4f" stroke="#7a2721" stroke-width="1.5"/><circle cx="12" cy="15" r="6" fill="#d65a4f" stroke="#7a2721" stroke-width="1.5"/><circle cx="28" cy="15" r="6" fill="#d65a4f" stroke="#7a2721" stroke-width="1.5"/><circle cx="12" cy="15" r="2.6" fill="#1b1430"/><circle cx="28" cy="15" r="2.6" fill="#1b1430"/><path d="M11 27 Q20 33 29 27" stroke="#1b1430" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M5 5 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z M35 30 l.8 2 2 .8 -2 .8 -.8 2 -.8 -2 -2 -.8 2 -.8z M20 22 l.8 2 2 .8 -2 .8 -.8 2 -.8 -2 -2 -.8 2 -.8z" fill="#f2c14e"/></svg>',
+  garland: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h20" stroke="#f2c14e" stroke-width="3" stroke-dasharray="1 4" stroke-linecap="round"/></svg>',
   hat: '<svg viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="32" rx="17" ry="4.5" fill="#4a2477"/><path d="M9 31 Q15 20 18 5 Q20 1 23 4 Q27 9 30 12 Q25 12 25 16 Q27 25 31 31Z" fill="#6a3aa0" stroke="#2c1247" stroke-width="1.5"/><rect x="12" y="25" width="17" height="4" rx="1.5" fill="#f2c14e"/><path d="M33 6 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z M6 14 l.8 2 2 .8 -2 .8 -.8 2 -.8 -2 -2 -.8 2 -.8z" fill="#f2c14e"/></svg>',
 };
 
@@ -115,6 +119,29 @@ export function openSheet(container, children, { title } = {}) {
   veil.addEventListener('click', (event) => { if (event.target === veil) close(); });
   container.append(veil);
   return close;
+}
+
+// Bonus d'un soir, en toutes lettres : « Journée parfaite +5 », « Série de 3 soirs +5 ».
+export function bonusLabels(day) {
+  const labels = [];
+  if (day.points.perfectDay) labels.push(`${TEXTS.sessionEnd.perfectDay} +${day.points.perfectDay}`);
+  if (day.points.streak) labels.push(`${TEXTS.sessionEnd.streakBonus(day.streak)} +${day.points.streak}`);
+  return labels;
+}
+
+// Deux cartes : points des ongles préservés, et bonus du soir.
+export function dayRecap(day, emptyBonus = TEXTS.sessionEnd.noBonus) {
+  const preserved = element('div', 'card');
+  preserved.append(element('h2', null, TEXTS.sessionEnd.preserved), element('div', 'big-number', TEXTS.common.points(day.points.classic)));
+  const bonus = element('div', 'card');
+  const list = element('ul');
+  const labels = bonusLabels(day);
+  if (labels.length) list.append(...labels.map((label) => element('li', null, label)));
+  else list.append(element('li', 'quiet', emptyBonus));
+  bonus.append(element('h2', null, TEXTS.sessionEnd.bonus), list);
+  const recap = element('div', 'recap');
+  recap.append(preserved, bonus);
+  return recap;
 }
 
 // Pavé de quatre chiffres. onComplete(code) reçoit les quatre chiffres tapés, puis le pavé se vide.

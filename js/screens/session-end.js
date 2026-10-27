@@ -9,7 +9,7 @@ import { createHands } from '../hands.js';
 import { isEditableByChild, MAX_NAIL_LENGTH } from '../rules.js';
 import { play } from '../sound.js';
 import { pick, TEXTS } from '../texts.js';
-import { bigButton, element, icon, linkButton, topBar, witch } from '../ui.js';
+import { bigButton, dayRecap, element, icon, linkButton, topBar, witch } from '../ui.js';
 
 // Délai avant la pousse, pour que l'enfant voie d'abord les ongles d'avant.
 const GROW_DELAY = 700;
@@ -34,18 +34,7 @@ export function render(container, navigate, { date, replay = true } = {}) {
   }
 
   const texts = TEXTS.sessionEnd;
-  const preserved = element('div', 'card');
-  preserved.append(element('h2', null, texts.preserved), element('div', 'big-number', TEXTS.common.points(day.points.classic)));
-
-  const bonus = element('div', 'card');
-  const list = element('ul');
-  if (day.points.perfectDay) list.append(element('li', null, `${texts.perfectDay} +${day.points.perfectDay}`));
-  if (day.points.streak) list.append(element('li', null, `${texts.streakBonus(day.streak)} +${day.points.streak}`));
-  if (!list.children.length) list.append(element('li', 'quiet', texts.noBonus));
-  bonus.append(element('h2', null, texts.bonus), list);
-
-  const recap = element('div', 'recap');
-  recap.append(preserved, bonus);
+  const recap = dayRecap(day);
 
   const streak = element('div', 'streak');
   if (day.streak > 0) {
