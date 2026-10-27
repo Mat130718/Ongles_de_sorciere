@@ -1,11 +1,19 @@
-/* Ongles de sorcière - Styles de l'application. */
+/* Ongles de sorcière - Styles de l'application.
+   Univers de la maquette validée par l'enfant : nuit de sorcière, violet profond, peau verte, éclats d'or. */
 
 :root {
-  --background: #f6f1fa;
-  --text: #2a1740;
-  --accent: #3b1f5c;
-  --accent-soft: #d9cce6;
-  --on-accent: #ffffff;
+  --background: #1b1430;
+  --night-2: #271d42;
+  --night-3: #34285a;
+  --text: #f4ecd6;
+  --mist: #b8add4;
+  --gold: #f2c14e;
+  --nail-light: #b685e6;
+  --line: #4a3d72;
+  --accent: #5b2a8c;
+  --accent-soft: #34285a;
+  --on-accent: #f4ecd6;
+  color-scheme: dark;
   /* Zone tactile minimale côté enfant : 1,5 cm, soit environ 87 points sur le téléphone cible (EX-045). */
   --touch-min: 87px;
 }
@@ -53,6 +61,7 @@ h1 { margin: 8px 0 4px; font-size: 1.6rem; text-align: center; }
 }
 .button.primary { background: var(--accent); color: var(--on-accent); }
 .button.secondary { background: var(--accent-soft); color: var(--text); }
+.button.gold { background: var(--gold); color: #2a1d45; }
 .button:active { transform: scale(0.97); }
 
 /* Petit bouton discret de l'espace parent, en bas de l'accueil. */
@@ -64,4 +73,51 @@ h1 { margin: 8px 0 4px; font-size: 1.6rem; text-align: center; }
   background: transparent;
   font-size: 1.2rem;
   opacity: 0.5;
+}
+
+/* --- Les deux mains (js/hands.js) --- */
+
+.hands-area { position: relative; user-select: none; -webkit-user-select: none; }
+.hands-area.swipe { touch-action: pan-y; }
+svg.hands { display: block; width: 100%; height: auto; max-height: 62vh; touch-action: manipulation; }
+svg.hands.mini { max-width: 260px; margin: 0 auto; }
+svg.hands image { pointer-events: none; }
+.zoom { transition: transform 0.45s cubic-bezier(0.3, 0.9, 0.4, 1); }
+.hand { transition: opacity 0.35s; }
+.hand.faded { opacity: 0.12; pointer-events: none; }
+
+.finger-zone { fill: transparent; }
+.finger[role="button"] { cursor: pointer; outline: none; }
+.finger[role="button"]:focus-visible .finger-zone { fill: #f2c14e33; }
+
+.nail {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 0.9s cubic-bezier(0.3, 1.4, 0.5, 1), opacity 0.4s;
+  filter: drop-shadow(0 3px 3px #1a083088);
+}
+/* Fonte d'un ongle : environ 1,5 seconde, gouttes comprises. */
+.finger.melted .nail { transition: transform 1.3s ease-in, opacity 1s 0.4s; }
+.puddle { fill: var(--nail-light); opacity: 0; transition: opacity 0.6s 0.9s; }
+.finger.melted .puddle { opacity: 1; }
+.drop { fill: var(--nail-light); animation: drop 1.4s ease-in forwards; }
+@keyframes drop { to { transform: translateY(120px); opacity: 0; } }
+
+/* Ongle très long, au 7e jour et au-delà : une étoile scintille au bout. */
+.sparkle { fill: var(--gold); display: none; transform-box: fill-box; transform-origin: center; animation: sparkle 2.2s ease-in-out infinite; }
+.finger.very-long .sparkle { display: inline; }
+@keyframes sparkle { 50% { transform: scale(0.55) rotate(25deg); opacity: 0.6; } }
+
+.focus-buttons { display: flex; justify-content: center; gap: 14px; margin-top: 4px; }
+.round {
+  width: 56px; height: 56px; padding: 0;
+  border-radius: 50%; border: 2px solid var(--line); background: var(--night-2);
+  display: grid; place-items: center;
+}
+.round[aria-pressed="true"] { border-color: var(--gold); background: var(--night-3); }
+.round svg { width: 34px; height: 34px; }
+.hand-icon { fill: #8cc56b; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
