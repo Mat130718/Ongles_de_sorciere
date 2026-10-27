@@ -1,4 +1,4 @@
-// Ongles de sorcière - Tests automatiques des règles de points (TA-01 à TA-14, TA-16 à TA-18).
+// Ongles de sorcière - Tests automatiques des règles de points (TA-01 à TA-14, TA-16 à TA-18, TA-21).
 // Lancement, à la racine du dépôt : npm test, ou node --test "tests/*.test.js".
 // Toutes les dates sont fictives. Le fuseau de Paris est imposé pour essayer le changement d'heure.
 
