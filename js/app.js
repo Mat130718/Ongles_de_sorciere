@@ -13,6 +13,7 @@ import * as parentCode from './screens/parent-code.js';
 import * as parentMenu from './screens/parent-menu.js';
 import * as backup from './screens/backup.js';
 import * as weeklyReview from './screens/weekly-review.js';
+import * as shop from './screens/shop.js';
 
 export const screens = {
   'home': home,
@@ -25,6 +26,7 @@ export const screens = {
   'parent-menu': parentMenu,
   'backup': backup,
   'weekly-review': weeklyReview,
+  'shop': shop,
 };
 
 const container = document.getElementById('app');

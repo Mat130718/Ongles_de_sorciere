@@ -36,7 +36,7 @@ export function render(container, navigate) {
         children.push(bigButton(texts.catchUpDay, () => { close(); navigate('declaration', { date }); }, { variant: 'gold' }));
       }
     } else {
-      children.push(createHands({ preserved: day.nails, melted: day.bitten, mini: true }).element, dayRecap(day, texts.none));
+      children.push(createHands({ preserved: day.nails, melted: day.bitten, polish: data.polish(), mini: true }).element, dayRecap(day, texts.none));
       if (day.symbol === 'red-toad') children.push(element('p', 'centered', texts.redToad));
     }
     children.push(bigButton(texts.close, close, { variant: 'second' }));

@@ -1,19 +1,21 @@
 // Ongles de sorcière - Accueil (écran 2, US-013).
 // Le solde et le son en haut, la sorcière et sa bulle, les deux mains d'aujourd'hui, puis
-// « Ma soirée » et « Mon calendrier ». La petite clé discrète mène à l'espace parent (EX-040).
+// « Ma soirée », « Ma boutique » et « Mon calendrier ». La petite clé discrète mène à l'espace
+// parent (EX-040). La boutique attend que les soirs à raconter le soient (DEC-128).
 // Le dimanche à partir de 16 h, un bandeau rappelle aux parents le bilan (EX-054).
 
 import { isDeclarationOpen } from '../calendar.js';
 import * as data from '../data.js';
 import { createHands } from '../hands.js';
 import { isEditableByChild } from '../rules.js';
+import { play } from '../sound.js';
 import { TEXTS } from '../texts.js';
 import { bigButton, element, icon, topBar, witch } from '../ui.js';
 
 // « Plus tard » vaut jusqu'à la prochaine ouverture de l'application.
 let later = false;
 
-export function render(container, navigate) {
+export function render(container, navigate, { shopClosed = false } = {}) {
   const now = new Date();
   const { today, days, nails } = data.history(now);
   const record = data.dayRecord(today);
@@ -60,11 +62,25 @@ export function render(container, navigate) {
 
   // Ce soir déjà raconté : ses ongles fondus restent visibles jusqu'au lendemain.
   const tonight = days.find((day) => day.date === today);
-  const hands = createHands({ preserved: nails, melted: tonight?.bitten ?? [], mini: true });
+  const hands = createHands({ preserved: nails, melted: tonight?.bitten ?? [], polish: data.polish(), mini: true });
+  if (shopClosed) bubble = TEXTS.shop.closed;
+  const sorceress = witch(shopClosed ? 4 : sealed ? 5 : 1, bubble);
 
   const actions = element('div', 'stack');
+  const shopOpen = data.shopOpen(now);
+  const shop = bigButton(TEXTS.home.shop, () => {
+    // Pas encore ouverte : la sorcière invite à raconter la soirée d'abord.
+    if (!data.shopOpen(new Date())) {
+      sorceress.say(TEXTS.shop.closed, 4);
+      play('tap');
+      return;
+    }
+    navigate('shop');
+  }, { variant: 'gold', iconName: 'cauldron' });
+  if (!shopOpen) shop.append(icon('lock'));
   actions.append(
     bigButton(editable ? TEXTS.home.editEvening : TEXTS.home.evening, () => navigate('declaration'), { iconName: 'moon' }),
+    shop,
     bigButton(TEXTS.home.calendar, () => navigate('calendar'), { variant: 'second', iconName: 'grimoire' }),
   );
 
@@ -74,7 +90,7 @@ export function render(container, navigate) {
   parentKey.append(icon('key'));
   parentKey.addEventListener('click', () => navigate('parent-code'));
 
-  container.append(topBar(navigate, { now }), witch(sealed ? 5 : 1, bubble).element, hands.element);
+  container.append(topBar(navigate, { now }), sorceress.element, hands.element);
   if (data.reviewDue(now)) {
     const banner = element('div', 'banner');
     banner.append(icon('key'), TEXTS.home.sundayReminder);

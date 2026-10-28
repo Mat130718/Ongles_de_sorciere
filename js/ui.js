@@ -15,6 +15,13 @@ const ICONS = {
   mute: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#f4ecd6"/><path d="M16 9 l5 6 M21 9 l-5 6" stroke="#f4ecd6" stroke-width="2" stroke-linecap="round"/></svg>',
   star: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.7-6.2 3.7 1.6-7L2 9.2l7.1-.6z" fill="#f2c14e"/></svg>',
   back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="#f4ecd6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  // Boutique (palier 2) : chaudron, flacon de vernis, éclair des effets, coffre aux trésors, dé de la surprise.
+  cauldron: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M8 16 Q8 34 20 35 Q32 34 32 16Z" fill="#1b1430" stroke="#2a1d45" stroke-width="2"/><ellipse cx="20" cy="16" rx="13" ry="4" fill="#6cc24a" stroke="#2a1d45" stroke-width="2"/><circle cx="16" cy="9" r="2.5" fill="#6cc24a"/><circle cx="23" cy="6" r="1.8" fill="#6cc24a"/><path d="M29 4 l1 2.5 2.5 1 -2.5 1 -1 2.5 -1 -2.5 -2.5 -1 2.5 -1z" fill="#5b2a8c"/></svg>',
+  bottle: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="13" y="16" width="14" height="19" rx="4" fill="currentColor"/><rect x="16" y="6" width="8" height="11" rx="2" fill="currentColor" opacity=".6"/></svg>',
+  bolt: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M22 4 L10 22 L19 22 L16 36 L30 16 L21 16 Z" fill="#f2c14e"/></svg>',
+  chest: '<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 18 Q6 8 20 8 Q34 8 34 18Z" fill="currentColor" opacity=".7"/><rect x="6" y="18" width="28" height="15" rx="3" fill="currentColor"/><rect x="17" y="16" width="6" height="7" rx="1.5" fill="#f2c14e"/></svg>',
+  dice: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="7" width="26" height="26" rx="6" fill="#f4ecd6"/><circle cx="14" cy="14" r="2.6" fill="#5b2a8c"/><circle cx="26" cy="26" r="2.6" fill="#5b2a8c"/><circle cx="20" cy="20" r="2.6" fill="#5b2a8c"/><circle cx="26" cy="14" r="2.6" fill="#5b2a8c"/><circle cx="14" cy="26" r="2.6" fill="#5b2a8c"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2.5" fill="currentColor"/><path d="M8 10 V7 a4 4 0 0 1 8 0 V10" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>',
   // Symboles provisoires du calendrier, repris de la maquette, en attendant les images
   // définitives (US-030) : chapeau pailleté, crapaud, crapaud rouge à petites cornes (DEC-110).
   toad: '<svg viewBox="0 0 40 40" aria-hidden="true"><ellipse cx="20" cy="26" rx="16" ry="11" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="12" cy="15" r="6" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="28" cy="15" r="6" fill="#4e9a58" stroke="#2b5a32" stroke-width="1.5"/><circle cx="12" cy="15" r="2.6" fill="#1b1430"/><circle cx="28" cy="15" r="2.6" fill="#1b1430"/><path d="M11 27 Q20 33 29 27" stroke="#1b1430" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
@@ -73,7 +80,8 @@ export function witch(expression, text, { large = false } = {}) {
 }
 
 // Barre du haut de l'enfant : solde ou retour à gauche, bouton du son à droite (EX-027).
-export function topBar(navigate, { back = false, now = new Date() } = {}) {
+// La boutique montre le retour et le solde ensemble (balance).
+export function topBar(navigate, { back = false, balance = !back, now = new Date() } = {}) {
   const bar = element('div', 'top-bar');
   if (back) {
     const button = element('button', 'round');
@@ -82,10 +90,13 @@ export function topBar(navigate, { back = false, now = new Date() } = {}) {
     button.append(icon('back'));
     button.addEventListener('click', () => navigate('home'));
     bar.append(button);
-  } else {
-    const balance = element('span', 'balance');
-    balance.append(icon('star'), TEXTS.common.points(data.history(now).balance));
-    bar.append(balance);
+  }
+  if (balance) {
+    const points = data.history(now).balance;
+    // Solde négatif : affiché tel quel, sans couleur d'alerte (DEC-129).
+    const shown = element('span', `balance${points < 0 ? ' negative' : ''}`);
+    shown.append(icon('star'), TEXTS.common.points(points));
+    bar.append(shown);
   }
   const sound = element('button', 'round');
   sound.type = 'button';

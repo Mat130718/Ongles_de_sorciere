@@ -6,6 +6,7 @@
 import { FORMAT_VERSION } from './backup.js';
 import { storyDate } from './calendar.js';
 import { computeHistory, dueAutoClosures, forgottenDates, reviewState, weekToReview } from './rules.js';
+import { breakEffect, buy, isShopOpen, MELT, wornPolish } from './shop.js';
 import { clearAll, loadAndMigrate, putDay, putWeeks, replaceAll, requestPersistence, setSetting } from './store.js';
 import { setSoundEnabled } from './sound.js';
 
@@ -69,7 +70,9 @@ export function weekToAnnounce(now = new Date()) {
 export const dayRecord = (date) => data.days.find((day) => day.date === date) ?? null;
 export const weeks = () => data.weeks;
 
-const context = (now) => ({ days: data.days, weeks: data.weeks, firstLaunch: data.settings.firstLaunch, now });
+const context = (now) => ({
+  days: data.days, weeks: data.weeks, firstLaunch: data.settings.firstLaunch, now, purchases: purchases(),
+});
 
 export const history = (now = new Date()) => computeHistory(context(now));
 export const forgotten = (now = new Date()) => forgottenDates(context(now));
@@ -85,4 +88,28 @@ export async function closeDueWeeks(now = new Date()) {
   if (!due.length) return;
   await putWeeks(due);
   data.weeks = [...data.weeks, ...due];
+}
+
+// --- Boutique (palier 2) ---
+// Achats, vernis posés et effet choisi sont des réglages : ils partent dans le fichier de
+// sauvegarde avec le reste, sans changer son format (RG-019).
+
+export const purchases = () => data.settings.purchases ?? [];
+export const polish = () => wornPolish(data.settings.polish, purchases());
+export const effectChoice = () => data.settings.breakEffect ?? MELT;
+// Effet à jouer pour un ongle rongé : l'effet choisi, ou un tirage pour « Surprise ».
+export const nextBreakEffect = () => breakEffect(effectChoice(), purchases());
+export const shopOpen = (now = new Date()) => isShopOpen(context(now));
+
+export async function buyItem(key, now = new Date()) {
+  const { balance } = history(now);
+  await saveSetting('purchases', buy(key, { balance, purchases: purchases(), now }));
+}
+
+export async function savePolish(list) {
+  await saveSetting('polish', [...list]);
+}
+
+export async function saveEffectChoice(choice) {
+  await saveSetting('breakEffect', choice);
 }
