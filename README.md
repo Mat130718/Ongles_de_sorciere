@@ -12,7 +12,7 @@ Application web installable (PWA) qui aide un enfant à ne plus se ronger les on
 
 ## État du projet
 
-Cadrage, documents de référence, test de faisabilité et conception terminés. Le développement du palier 1 est en cours, lot par lot : le squelette de l'application est en place, ses écrans sont encore vides.
+Cadrage, documents de référence, test de faisabilité et palier 1 terminés : le palier 1 est en ligne depuis le 28 octobre 2026. Le palier 2 est en cours, lot par lot, en commençant par la boutique.
 
 ## Règle du dépôt
 

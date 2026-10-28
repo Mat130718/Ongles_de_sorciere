@@ -25,7 +25,7 @@ export function render(container, navigate, { date, replay = true } = {}) {
   if (!day || day.status === 'pending' || day.status === 'empty') return navigate('home');
   const before = days.find((entry) => entry.date === addDays(date, -1))?.nails ?? new Array(10).fill(0);
 
-  const hands = createHands({ preserved: replay ? before : day.nails, melted: day.bitten, mini: true });
+  const hands = createHands({ preserved: replay ? before : day.nails, melted: day.bitten, polish: data.polish(), mini: true });
   if (replay) {
     setTimeout(() => {
       hands.grow(day.nails);

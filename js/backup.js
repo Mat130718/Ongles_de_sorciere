@@ -73,6 +73,19 @@ function isValidDay(record) {
     && (record.correctedAt === undefined || isInstant(record.correctedAt));
 }
 
+// Achats de la boutique (palier 2) : facultatifs, pour relire une sauvegarde du palier 1.
+function isValidPurchases(list) {
+  return list === undefined || (Array.isArray(list) && list.every((purchase) => purchase
+    && typeof purchase.item === 'string'
+    && Number.isInteger(purchase.price) && purchase.price >= 0
+    && isInstant(purchase.at)));
+}
+
+function isValidPolish(list) {
+  return list === undefined || (Array.isArray(list) && list.length === NAIL_COUNT
+    && list.every((id) => id === null || typeof id === 'string'));
+}
+
 function isValidWeek(record) {
   return record
     && DATE_PATTERN.test(record.monday)
@@ -107,7 +120,9 @@ export function parseBackup(text, options = {}) {
   const settings = file.settings ?? {};
   if (!Array.isArray(file.days) || !file.days.every(isValidDay)
       || !Array.isArray(file.weeks) || !file.weeks.every(isValidWeek)
-      || typeof settings !== 'object' || !DATE_PATTERN.test(settings.firstLaunch)) {
+      || typeof settings !== 'object' || !DATE_PATTERN.test(settings.firstLaunch)
+      || !isValidPurchases(settings.purchases) || !isValidPolish(settings.polish)
+      || (settings.breakEffect !== undefined && typeof settings.breakEffect !== 'string')) {
     return { ok: false, reason: 'invalid' };
   }
   const kept = Object.fromEntries(
@@ -125,7 +140,9 @@ export function parseBackup(text, options = {}) {
 // Résumé montré au parent avant de confirmer une restauration : période, soirs racontés, solde.
 export function backupSummary({ days, weeks, settings }, now) {
   const dates = days.map((record) => record.date).sort();
-  const { balance } = computeHistory({ days, weeks, firstLaunch: settings.firstLaunch, now });
+  const { balance } = computeHistory({
+    days, weeks, firstLaunch: settings.firstLaunch, now, purchases: settings.purchases ?? [],
+  });
   return {
     from: settings.firstLaunch,
     to: dates.at(-1) ?? settings.firstLaunch,

@@ -1,6 +1,7 @@
 // Ongles de sorcière - Déclaration du soir (écran 3, US-006), et rattrapage d'un soir oublié (US-010).
-// L'enfant touche les doigts dont elle a rongé l'ongle : l'ongle fond, la sorcière la remercie
-// de sa franchise ; un second toucher le fait revenir (EX-001, EX-053, EX-012).
+// L'enfant touche les doigts dont elle a rongé l'ongle : l'ongle casse avec l'effet qu'elle a
+// choisi dans la boutique (l'ongle qui fond par défaut), la sorcière la remercie de sa franchise ;
+// un second toucher le fait revenir (EX-001, EX-053, EX-012, DEC-131).
 // Avant 16 h, la sorcière dit qu'il est trop tôt, puis l'écran passe tout seul à la
 // déclaration à 16 h (RG-002, EX-002, EX-003). Un soir oublié se rattrape à toute heure.
 // Le soir déclaré se modifie jusqu'au 4 h qui suit le début de sa saisie (RG-003, EX-004).
@@ -9,7 +10,7 @@ import { addDays, atLocal, dateKey, isDeclarationOpen, OPENING_HOUR, storyDate }
 import * as data from '../data.js';
 import { createHands } from '../hands.js';
 import { childRecord, isEditableByChild } from '../rules.js';
-import { play } from '../sound.js';
+import { EFFECT_SOUNDS, play } from '../sound.js';
 import { dayLabel, pick, TEXTS } from '../texts.js';
 import { bigButton, bonusLabels, element, openSheet, topBar, witch } from '../ui.js';
 
@@ -42,13 +43,15 @@ function renderDeclaration(container, navigate, now, date, catchUp) {
   const hands = createHands({
     preserved,
     melted: existing?.bitten ?? [],
+    polish: data.polish(),
+    effect: data.nextBreakEffect,
     interactive: true,
     swipe: true,
-    onToggle: (_, melted) => {
+    onToggle: (_, melted, played) => {
       if (melted) {
         lastHonesty = pick(TEXTS.honesty, lastHonesty);
         sorceress.say(lastHonesty, 6);
-        play('melt');
+        play(EFFECT_SOUNDS[played] ?? 'melt');
       } else {
         sorceress.say(TEXTS.declaration.nailBack, hands.melted().length ? 6 : 1);
         play('tap');

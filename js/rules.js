@@ -147,10 +147,17 @@ function playedDates(monday, firstLaunch) {
 
 // --- Calcul complet ---
 
+// Points dépensés dans la boutique : la somme des prix payés (RG-011, js/shop.js).
+export function spentPoints(purchases = []) {
+  return purchases.reduce((sum, purchase) => sum + purchase.price, 0);
+}
+
 // Recalcule tout, du premier lancement jusqu'au jour raconté à cet instant.
+// Le solde est ce qui a été gagné moins ce qui a été dépensé ; il peut devenir négatif après
+// une correction, et les gains suivants le ramènent à zéro (RG-011).
 // Les fiches datées après ce jour (heure du téléphone qui recule) sont gardées par le
 // stockage, mais ignorées ici jusqu'à leur date.
-export function computeHistory({ days, weeks, firstLaunch, now }) {
+export function computeHistory({ days, weeks, firstLaunch, now, purchases = [] }) {
   const today = storyDate(now);
   const recordsByDate = byKey(days, 'date');
   const weeksByMonday = byKey(weeks, 'monday');
@@ -198,10 +205,11 @@ export function computeHistory({ days, weeks, firstLaunch, now }) {
     }
   }
 
-  const balance = history.reduce((sum, day) => sum + day.total, 0)
+  const earned = history.reduce((sum, day) => sum + day.total, 0)
     + weekSummaries.reduce((sum, week) => sum + week.perfectBonus + week.honestyBonus, 0);
+  const spent = spentPoints(purchases);
 
-  return { today, days: history, weeks: weekSummaries, balance, streak, nails: [...nails] };
+  return { today, days: history, weeks: weekSummaries, earned, spent, balance: earned - spent, streak, nails: [...nails] };
 }
 
 // Symbole du calendrier (RG-013). Le crapaud rouge reste visible pendant la semaine du

@@ -1,13 +1,15 @@
 // Ongles de sorcière - Les deux mains de la sorcière.
 // La main est une image d'une IA de dessin (DEC-091) ; la main droite est la même image,
-// retournée. Le programme dessine les ongles vernis par-dessus, les fait pousser, les fait
-// fondre, et gère le balayage qui agrandit une main (DEC-092).
+// retournée. Le programme dessine les ongles vernis par-dessus, les fait pousser, joue l'effet
+// de casse choisi quand un ongle est rongé (EX-012), et gère le balayage qui agrandit une main
+// (DEC-092). Les vernis de la boutique se posent ongle par ongle (DEC-130, js/magic.js).
 // Les deux mains sont croisées en diagonale, sans texte : la gauche part du bas à gauche,
 // doigts vers le haut à droite ; la droite part du haut à droite, doigts vers le haut à gauche.
 //
 // Ongles numérotés de 0 à 9 : 0 à 4 pour la main gauche, du pouce à l'auriculaire,
 // puis 5 à 9 pour la main droite, dans le même ordre.
 
+import { EFFECT_DURATION, fromMarkup, nailClass, nailMarkup, playEffect, polishDefs } from './magic.js';
 import { MAX_NAIL_LENGTH, nailLength } from './rules.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -41,7 +43,7 @@ const SWIPE_SLOPE = 1.3;
 // Un toucher qui suit de près un balayage est ignoré.
 const SWIPE_CLICK_GUARD = 350;
 
-let gradientCount = 0;
+let drawingCount = 0;
 
 // Petite main dessinée pour les boutons d'agrandissement, inclinée comme la vraie main.
 function handIcon(side, x, y) {
@@ -79,20 +81,20 @@ function paintNail(finger, preservedDays, melted) {
   if (finger.hasAttribute('role')) finger.setAttribute('aria-pressed', String(melted));
 }
 
-function buildFinger(index, side, gradientId, interactive) {
+// Dessin de l'ongle selon son vernis (null : l'ongle violet de la sorcière).
+function dressNail(nail, prefix, polishId) {
+  nail.replaceChildren(...fromMarkup(nailMarkup(prefix, polishId)));
+  nail.setAttribute('class', `nail ${nailClass(polishId)}`.trim());
+}
+
+function buildFinger(index, side, prefix, polishId, interactive) {
   const spot = NAIL_SPOTS[index % 5];
   const radians = (spot.angle * Math.PI) / 180;
   const baseX = spot.x - Math.sin(radians) * 22;
   const baseY = spot.y + Math.cos(radians) * 22;
 
-  const nail = svg('g', { class: 'nail' }, [
-    svg('path', {
-      d: 'M-16 6 L-16 -38 Q-15 -68 0 -84 Q15 -68 16 -38 L16 6 Q0 11 -16 6 Z',
-      fill: `url(#${gradientId})`, stroke: '#250c45', 'stroke-width': '2',
-    }),
-    svg('path', { d: 'M-8 -4 L-8 -38 Q-7 -56 0 -66', stroke: '#ffffffaa', 'stroke-width': '4.5', fill: 'none', 'stroke-linecap': 'round' }),
-    svg('path', { d: 'M8 -8 L8 -28', stroke: '#ffffff44', 'stroke-width': '3', 'stroke-linecap': 'round' }),
-  ]);
+  const nail = svg('g', { class: 'nail' });
+  dressNail(nail, prefix, polishId);
   const placed = svg('g', {
     class: 'finger-shape',
     transform: `translate(${baseX} ${baseY}) rotate(${spot.angle}) scale(${spot.width / 32})`,
@@ -113,43 +115,50 @@ function buildFinger(index, side, gradientId, interactive) {
   return finger;
 }
 
-function buildHand(side, gradientId, interactive) {
-  const fingers = [0, 1, 2, 3, 4].map((k) => buildFinger(side === 'left' ? k : k + 5, side, gradientId, interactive));
+function buildHand(side, prefix, polish, interactive) {
+  const fingers = [0, 1, 2, 3, 4].map((k) => {
+    const index = side === 'left' ? k : k + 5;
+    return buildFinger(index, side, prefix, polish[index], interactive);
+  });
   const image = svg('image', { href: HAND_IMAGE, width: IMAGE_SIZE, height: IMAGE_SIZE });
   const flipped = svg('g', side === 'right' ? { transform: `translate(${IMAGE_SIZE} 0) scale(-1 1)` } : {}, [image, ...fingers]);
   return { group: svg('g', { class: `hand hand-${side}`, transform: POSES[side] }, [flipped]), fingers };
 }
 
-// Petites gouttes de vernis qui tombent d'un ongle qui fond.
-function drip(finger) {
-  const shape = finger.querySelector('.finger-shape');
-  [-6, 2, 8].forEach((dx, k) => {
-    const drop = svg('circle', { class: 'drop', cx: dx, cy: -30 - k * 8, r: 5 - k * 0.8 });
-    drop.style.animationDelay = `${0.25 + k * 0.22}s`;
-    shape.append(drop);
-    setTimeout(() => drop.remove(), MELT_DURATION + 700);
-  });
+// L'effet de casse joué sur un ongle (les gouttes de l'ongle qui fond, par défaut).
+function breakNail(finger, effectId) {
+  const index = Number(finger.dataset.nail);
+  const played = playEffect(finger.querySelector('.finger-shape'), effectId, { mirrored: index >= 5 });
+  // La flaque de vernis appartient à l'ongle qui fond ; les autres effets emportent l'ongle.
+  finger.classList.toggle('no-puddle', played !== 'fond');
+  return played;
 }
 
 // Crée les deux mains.
 //   preserved : nombre de jours préservés de chaque ongle (10 nombres), qui donne sa longueur ;
 //   melted    : ongles fondus (rongés) ;
-//   interactive : chaque doigt se touche ; onToggle(numéro, fondu) est appelé à chaque toucher ;
+//   polish    : vernis posé sur chaque ongle (10 identifiants, ou null sans vernis) ;
+//   effect    : fonction qui donne l'effet de casse à jouer à chaque ongle rongé ;
+//   interactive : chaque doigt se touche ; onToggle(numéro, fondu, effet) est appelé à chaque toucher ;
+//   onTouch   : remplace la fonte : appelé avec le numéro de l'ongle touché (pose d'un vernis) ;
 //   swipe     : un balayage agrandit une main ; des boutons ronds font de même.
-export function createHands({ preserved, melted = [], interactive = false, swipe = false, mini = false, onToggle }) {
-  const gradientId = `nail-gradient-${++gradientCount}`;
-  const gradient = svg('linearGradient', { id: gradientId, x1: '0', y1: '0', x2: '1', y2: '0' },
-    [['0', '#3a1468'], ['.35', '#9b5ae6'], ['.6', '#7a3fc4'], ['1', '#2f1255']]
-      .map(([offset, color]) => svg('stop', { offset, 'stop-color': color })));
+export function createHands({
+  preserved, melted = [], polish = [], effect = () => 'fond',
+  interactive = false, swipe = false, mini = false, onToggle, onTouch,
+}) {
+  const prefix = `hands-${++drawingCount}`;
+  const worn = Array.from({ length: 10 }, (_, index) => polish[index] ?? null);
+  const defs = svg('defs');
+  defs.append(...fromMarkup(polishDefs(prefix)));
 
-  const left = buildHand('left', gradientId, interactive);
-  const right = buildHand('right', gradientId, interactive);
+  const left = buildHand('left', prefix, worn, interactive);
+  const right = buildHand('right', prefix, worn, interactive);
   const fingers = [...left.fingers, ...right.fingers];
   const zoom = svg('g', { class: 'zoom' }, [left.group, right.group]);
   const drawing = svg('svg', {
     class: `hands${mini ? ' mini' : ''}`, viewBox: '0 0 1500 1860',
     role: interactive ? 'group' : 'img', 'aria-label': 'les deux mains de la sorcière',
-  }, [svg('defs', {}, [gradient]), zoom]);
+  }, [defs, zoom]);
 
   let lengths = [...preserved];
   let swipedAt = 0;
@@ -163,11 +172,12 @@ export function createHands({ preserved, melted = [], interactive = false, swipe
   if (interactive) {
     const toggle = (finger) => {
       const index = Number(finger.dataset.nail);
+      if (onTouch) return onTouch(index);
       const nowMelted = !state.has(index);
       if (nowMelted) state.add(index); else state.delete(index);
       paintNail(finger, lengths[index], nowMelted);
-      if (nowMelted) drip(finger);
-      onToggle?.(index, nowMelted);
+      const played = nowMelted ? breakNail(finger, effect()) : null;
+      onToggle?.(index, nowMelted, played);
     };
     fingers.forEach((finger) => {
       // Un balayage qui commence sur un doigt ne doit pas faire fondre son ongle.
@@ -234,5 +244,23 @@ export function createHands({ preserved, melted = [], interactive = false, swipe
       fingers.forEach((finger, index) => paintNail(finger, lengths[index], state.has(index)));
     },
     setFocus,
+    // Pose un vernis sur un ongle (null : l'enlève).
+    setPolish(index, polishId) {
+      worn[index] = polishId;
+      dressNail(fingers[index].querySelector('.nail'), prefix, polishId);
+    },
+    // Essai d'un effet de casse sur un ongle, qui repousse ensuite (boutique).
+    tryEffect(index, effectId) {
+      const finger = fingers[index];
+      if (state.has(index)) return null;
+      state.add(index);
+      paintNail(finger, lengths[index], true);
+      const played = breakNail(finger, effectId);
+      setTimeout(() => {
+        state.delete(index);
+        paintNail(finger, lengths[index], false);
+      }, EFFECT_DURATION[played]);
+      return played;
+    },
   };
 }
